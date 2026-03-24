@@ -23,12 +23,12 @@ st.markdown(
     a[href^="https://streamlit.io"] {display: none !important;}
     div[class^="viewerBadge"] {display: none !important;}
     
-    /* 🚨 微信排版修复：禁止微信自动放大字体，限制最大宽度防止横向溢出变形 */
+    /* 🚨 微信排版核心修复区 */
     html, body, [class*="css"]  {
-        -webkit-text-size-adjust: 100% !important; 
+        -webkit-text-size-adjust: 100% !important; /* 禁止微信自动放大字体 */
         text-size-adjust: 100% !important;
-        max-width: 100vw;
-        overflow-x: hidden;
+        max-width: 100vw !important; /* 限制最大宽度，防止内容溢出屏幕 */
+        overflow-x: hidden !important; /* 隐藏多余的横向滚动条 */
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         background-color: #f7f8fa; 
     }
@@ -216,7 +216,7 @@ st.markdown("### 🤝 社区合伙人招募")
 footer_col1, footer_col2 = st.columns([2, 1])
 
 with footer_col1:
-    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员微信，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员小郑，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
 
 with footer_col2:
     qr_filename = "Screenshot_20260322_230743_com.tencent.mm_edit_4401257242557.jpg"
