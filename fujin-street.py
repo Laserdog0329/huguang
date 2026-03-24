@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import os
 import datetime
@@ -9,6 +10,32 @@ st.set_page_config(
     page_icon="🏘️",
     layout="wide",
     initial_sidebar_state="collapsed"
+)
+
+# 🚨 专门对付微信的 JS 魔法：强制禁用字体缩放
+# 我们把它放在最前面，确保第一时间执行
+components.html(
+    """
+    <script>
+    function handleFontSize() {
+        if (window.parent.WeixinJSBridge) {
+            window.parent.WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+            window.parent.WeixinJSBridge.on('menu:setfont', function() {
+                window.parent.WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+            });
+        }
+    }
+    if (typeof window.parent.WeixinJSBridge == "object" && typeof window.parent.WeixinJSBridge.invoke == "function") {
+        handleFontSize();
+    } else {
+        if (window.parent.document.addEventListener) {
+            window.parent.document.addEventListener("WeixinJSBridgeReady", handleFontSize, false);
+        }
+    }
+    </script>
+    """,
+    height=0,
+    width=0
 )
 
 st.markdown(
@@ -25,10 +52,10 @@ st.markdown(
     
     /* 🚨 微信排版核心修复区 */
     html, body, [class*="css"]  {
-        -webkit-text-size-adjust: 100% !important; /* 禁止微信自动放大字体 */
+        -webkit-text-size-adjust: 100% !important; 
         text-size-adjust: 100% !important;
-        max-width: 100vw !important; /* 限制最大宽度，防止内容溢出屏幕 */
-        overflow-x: hidden !important; /* 隐藏多余的横向滚动条 */
+        max-width: 100vw !important; 
+        overflow-x: hidden !important; 
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         background-color: #f7f8fa; 
     }
@@ -216,7 +243,7 @@ st.markdown("### 🤝 社区合伙人招募")
 footer_col1, footer_col2 = st.columns([2, 1])
 
 with footer_col1:
-    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员小郑，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员微信，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
 
 with footer_col2:
     qr_filename = "Screenshot_20260322_230743_com.tencent.mm_edit_4401257242557.jpg"
