@@ -14,14 +14,14 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* 🚨 隐藏顶部导航条和底部的 GitHub 链接 */
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
+    /* 🚨 强力隐藏顶部导航条和基础页脚 */
+    header {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    #MainMenu {visibility: hidden !important;}
     
-    /* 🚨 强力隐藏右下角的云平台悬浮水印 */
-    div[class^="viewerBadge"] { display: none !important; }
-    div[class^="styles_viewerBadge"] { display: none !important; }
+    /* 🚨 强力隐藏右下角的云平台悬浮水印 (拦截所有指向官方的链接元素) */
+    a[href^="https://streamlit.io"] {display: none !important;}
+    div[class^="viewerBadge"] {display: none !important;}
     
     html, body, [class*="css"]  {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
@@ -215,9 +215,10 @@ st.markdown("### 🤝 社区合伙人招募")
 footer_col1, footer_col2 = st.columns([2, 1])
 
 with footer_col1:
-    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员小郑，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员微信，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
 
 with footer_col2:
     qr_filename = "Screenshot_20260322_230743_com.tencent.mm_edit_4401257242557.jpg"
     if os.path.exists(qr_filename):
         st.image(qr_filename, width=150)
+
