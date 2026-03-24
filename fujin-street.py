@@ -11,22 +11,23 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 注入全新 CSS 样式 (微信小程序原生风格 + 隐藏开发者菜单)
 st.markdown(
     """
     <style>
-    /* 🚨 隐藏顶部导航条 (Share, Deploy 等) 和底部的 GitHub 链接 */
+    /* 🚨 隐藏顶部导航条和底部的 GitHub 链接 */
     header {visibility: hidden;}
     footer {visibility: hidden;}
     #MainMenu {visibility: hidden;}
     
-    /* 统一系统原生字体，提升手机端阅读体验 */
+    /* 🚨 强力隐藏右下角的云平台悬浮水印 */
+    div[class^="viewerBadge"] { display: none !important; }
+    div[class^="styles_viewerBadge"] { display: none !important; }
+    
     html, body, [class*="css"]  {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         background-color: #f7f8fa; 
     }
     
-    /* 现代政务 APP 纯白卡片风格 */
     .clean-card {
         background-color: #ffffff;
         border-radius: 12px;
@@ -37,7 +38,6 @@ st.markdown(
         border: none;
     }
     
-    /* 标题微调 */
     h4 { margin-top: 0; color: #1a1a1a; font-weight: 600; }
     ul { padding-left: 20px; color: #555555; font-size: 14px; }
     li { margin-bottom: 6px; }
@@ -61,7 +61,7 @@ st.markdown(
 st.title("湖映福津·合伙“邻”距离 🏘️")
 st.info("⚠️ **公告**：本网站当前处于【建设调试阶段】。部分数据仅供样板展示。")
 
-# ==================== 3. 主页 C 位：环境卫士行动 (原侧边栏内容) ====================
+# ==================== 3. 主页 C 位：环境卫士行动 ====================
 st.markdown(
     """
     <div style="background-color: #fff0f0; border-left: 6px solid #E81123; padding: 16px; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 6px rgba(232,17,35,0.1);">
@@ -73,13 +73,43 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ==================== 4. 数据加载 ====================
+# ==================== 4. 数据加载与时间魔法 ====================
+# 定义判断营业状态的函数
+def get_shop_status(hours_str):
+    if pd.isna(hours_str) or str(hours_str).strip() == '':
+        return "⚪ 未知"
+    try:
+        # 获取当前电脑的时间并转换成分钟数，方便比大小
+        now = datetime.datetime.now().time()
+        current_time_mins = now.hour * 60 + now.minute
+        
+        # 处理可能的中文逗号，并拆分时间段
+        periods = str(hours_str).replace('，', ',').split(',')
+        for p in periods:
+            start_str, end_str = p.split('-')
+            start_h, start_m = map(int, start_str.split(':'))
+            end_h, end_m = map(int, end_str.split(':'))
+            
+            start_mins = start_h * 60 + start_m
+            end_mins = end_h * 60 + end_m
+            
+            if start_mins <= current_time_mins <= end_mins:
+                return "🟢 营业中"
+        return "🔴 已休息"
+    except Exception:
+        return "⚠️ 格式错误"
+
 @st.cache_data
 def load_data():
     file_path = "fujin.xlsx"
     if os.path.exists(file_path):
         try:
             df = pd.read_excel(file_path)
+            
+            # 如果表格里有营业时间这一列，就施加时间魔法
+            if '营业时间' in df.columns:
+                df['当前状态'] = df['营业时间'].apply(get_shop_status)
+                
             df['lat'] = pd.to_numeric(df['lat'], errors='coerce')
             df['lon'] = pd.to_numeric(df['lon'], errors='coerce')
             df_map = df.dropna(subset=['lat', 'lon'])
