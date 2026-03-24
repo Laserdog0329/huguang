@@ -61,8 +61,11 @@ with st.sidebar:
     st.header("📸 福津大街“环境卫士”行动")
     st.markdown("发现垃圾落地、小广告等脏乱差现象？请拍下来发给我们，社区网格员将第一时间跟进处理！")
     
-    # 使用通用的问卷链接
-    st.link_button("👉 点击上传图片", "https://wj.qq.com/s2/26097409/c8ed/", use_container_width=True)
+    # 使用 target="_self" 实现当前页面直接跳转，绕过微信拦截
+    st.markdown(
+        '<a href="https://wj.qq.com/s2/26097409/c8ed/" target="_self" style="display: block; text-align: center; background-color: #E81123; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">👉 点击上传图片</a>',
+        unsafe_allow_html=True
+    )
 
 # ==================== 4. 数据加载 ====================
 @st.cache_data
