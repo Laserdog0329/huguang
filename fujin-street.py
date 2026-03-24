@@ -11,14 +11,19 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 注入全新 CSS 样式 (微信小程序原生风格)
+# 注入全新 CSS 样式 (微信小程序原生风格 + 隐藏开发者菜单)
 st.markdown(
     """
     <style>
+    /* 🚨 隐藏顶部导航条 (Share, Deploy 等) 和底部的 GitHub 链接 */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
+    
     /* 统一系统原生字体，提升手机端阅读体验 */
     html, body, [class*="css"]  {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-        background-color: #f7f8fa; /* 整体页面浅灰背景，突出白色卡片 */
+        background-color: #f7f8fa; 
     }
     
     /* 现代政务 APP 纯白卡片风格 */
@@ -56,16 +61,17 @@ st.markdown(
 st.title("湖映福津·合伙“邻”距离 🏘️")
 st.info("⚠️ **公告**：本网站当前处于【建设调试阶段】。部分数据仅供样板展示。")
 
-# ==================== 3. 侧边栏：环境卫士行动 ====================
-with st.sidebar:
-    st.header("📸 福津大街“环境卫士”行动")
-    st.markdown("发现垃圾落地、小广告等脏乱差现象？请拍下来发给我们，社区网格员将第一时间跟进处理！")
-    
-    # 使用 target="_self" 实现当前页面直接跳转，绕过微信拦截
-    st.markdown(
-        '<a href="https://wj.qq.com/s2/26097409/c8ed/" target="_self" style="display: block; text-align: center; background-color: #E81123; color: white; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">👉 点击上传图片</a>',
-        unsafe_allow_html=True
-    )
+# ==================== 3. 主页 C 位：环境卫士行动 (原侧边栏内容) ====================
+st.markdown(
+    """
+    <div style="background-color: #fff0f0; border-left: 6px solid #E81123; padding: 16px; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 6px rgba(232,17,35,0.1);">
+        <h3 style="margin-top:0; color:#E81123; font-size: 20px;">📸 福津大街“环境卫士”行动</h3>
+        <p style="color:#555; font-size:15px; margin-bottom: 16px;">发现垃圾落地、小广告等脏乱差现象？请拍下来发给我们，社区网格员将第一时间跟进处理！</p>
+        <a href="https://wj.qq.com/s2/26097409/c8ed/" target="_self" style="display: block; text-align: center; background-color: #E81123; color: white; padding: 12px 15px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">👉 点击上传图片</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ==================== 4. 数据加载 ====================
 @st.cache_data
@@ -175,12 +181,11 @@ with tab3:
         )
 
 # ==================== 6. 自定义页脚 ====================
-st.divider()
 st.markdown("### 🤝 社区合伙人招募")
 footer_col1, footer_col2 = st.columns([2, 1])
 
 with footer_col1:
-    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员微信，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 16px; color: #555; margin-top:20px;'>欢迎添加湖光社区网格员小郑，加入街区合伙人共治计划！</p>", unsafe_allow_html=True)
 
 with footer_col2:
     qr_filename = "Screenshot_20260322_230743_com.tencent.mm_edit_4401257242557.jpg"
