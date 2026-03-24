@@ -23,7 +23,12 @@ st.markdown(
     a[href^="https://streamlit.io"] {display: none !important;}
     div[class^="viewerBadge"] {display: none !important;}
     
+    /* 🚨 微信排版修复：禁止微信自动放大字体，限制最大宽度防止横向溢出变形 */
     html, body, [class*="css"]  {
+        -webkit-text-size-adjust: 100% !important; 
+        text-size-adjust: 100% !important;
+        max-width: 100vw;
+        overflow-x: hidden;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
         background-color: #f7f8fa; 
     }
@@ -74,16 +79,13 @@ st.markdown(
 )
 
 # ==================== 4. 数据加载与时间魔法 ====================
-# 定义判断营业状态的函数
 def get_shop_status(hours_str):
     if pd.isna(hours_str) or str(hours_str).strip() == '':
         return "⚪ 未知"
     try:
-        # 获取当前电脑的时间并转换成分钟数，方便比大小
         now = datetime.datetime.now().time()
         current_time_mins = now.hour * 60 + now.minute
         
-        # 处理可能的中文逗号，并拆分时间段
         periods = str(hours_str).replace('，', ',').split(',')
         for p in periods:
             start_str, end_str = p.split('-')
@@ -106,7 +108,6 @@ def load_data():
         try:
             df = pd.read_excel(file_path)
             
-            # 如果表格里有营业时间这一列，就施加时间魔法
             if '营业时间' in df.columns:
                 df['当前状态'] = df['营业时间'].apply(get_shop_status)
                 
@@ -221,4 +222,3 @@ with footer_col2:
     qr_filename = "Screenshot_20260322_230743_com.tencent.mm_edit_4401257242557.jpg"
     if os.path.exists(qr_filename):
         st.image(qr_filename, width=150)
-
